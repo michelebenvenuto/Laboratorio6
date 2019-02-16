@@ -25,11 +25,12 @@ class SongAdapter(var c: Context, var songsList: ArrayList<Song>) : BaseAdapter(
     }
 
     override fun getItem(position: Int): Any {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return 0
     }
 
     override fun getItemId(position: Int): Long {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+        return 0
     }
 
     override fun getCount(): Int {

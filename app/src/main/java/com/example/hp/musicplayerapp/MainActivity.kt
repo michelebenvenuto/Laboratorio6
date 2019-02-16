@@ -1,20 +1,40 @@
 package com.example.hp.musicplayerapp
 
+import android.content.*
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import java.util.ArrayList
 import java.util.Collections
 import java.util.Comparator
 import android.net.Uri
-import android.content.ContentResolver
 import android.database.Cursor
+import android.view.View
 import com.example.hp.musicplayerapp.MOdels.Song
 import com.example.hp.musicplayerapp.MOdels.SongAdapter
 import kotlinx.android.synthetic.main.activity_main.*
+import android.widget.MediaController.MediaPlayerControl;
+import com.example.hp.musicplayerapp.MOdels.MusicController
+import com.example.hp.musicplayerapp.MOdels.MusicService
+import com.example.hp.musicplayerapp.R.id.songList
+import com.example.hp.musicplayerapp.MOdels.MusicService.MusicBinder
+import android.os.IBinder
+import android.content.ComponentName
+import com.example.hp.musicplayerapp.R.id.songList
+import android.content.ServiceConnection
+
+
+
+
 
 
 class MainActivity : AppCompatActivity() {
+
+
     private lateinit var songsArray: ArrayList<Song>
+    private lateinit var controller:MusicController
+    private var musicSrv: MusicService?= null
+    private var playIntent: Intent?=null
+    private var musicBound=false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,6 +46,37 @@ class MainActivity : AppCompatActivity() {
             Comparator<Song> { a, b -> a.songName.compareTo(b.songName) })
         val songAdpt= SongAdapter(this,songsArray)
         songList.adapter= songAdpt
+    }
+
+    //connect to the service
+    private val musicConnection = object : ServiceConnection {
+
+        override fun onServiceConnected(name: ComponentName, service: IBinder) {
+            val binder = service as MusicBinder
+            //get service
+            musicSrv = binder.service
+            //pass list
+            musicSrv!!.setList(songsArray)
+            musicBound = true
+        }
+
+        override fun onServiceDisconnected(name: ComponentName) {
+            musicBound = false
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (playIntent==null) {
+            playIntent = Intent(this, MusicService::class.java)
+            bindService(playIntent, musicConnection, Context.BIND_AUTO_CREATE)
+            startService(playIntent)
+        }
+    }
+
+    fun songPicked(view: View) {
+        musicSrv!!.setSong(Integer.parseInt(view.tag.toString()))
+        musicSrv!!.playSong()
     }
     fun getSongList(){
         val musicResolver = contentResolver
