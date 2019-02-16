@@ -42,6 +42,7 @@ class MainActivity : AppCompatActivity() {
         songsArray = ArrayList()
         getSongList()
 
+        //Codigo que permite ordenar las canciones por nombre y mostrarlas en la ListView
         Collections.sort(songsArray,
             Comparator<Song> { a, b -> a.songName.compareTo(b.songName) })
         val songAdpt= SongAdapter(this,songsArray)
@@ -64,7 +65,7 @@ class MainActivity : AppCompatActivity() {
             musicBound = false
         }
     }
-
+    // crea el intento y hace el bind con el servicio
     override fun onStart() {
         super.onStart()
         if (playIntent==null) {
@@ -73,11 +74,12 @@ class MainActivity : AppCompatActivity() {
             startService(playIntent)
         }
     }
-
+    // toca la cancion seleccionada
     fun songPicked(view: View) {
         musicSrv!!.setSong(Integer.parseInt(view.tag.toString()))
         musicSrv!!.playSong()
     }
+    //obtiene la lista de canciones de la Media del telefono
     fun getSongList(){
         val musicResolver = contentResolver
         val musicUri = android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI

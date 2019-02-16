@@ -9,7 +9,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.example.hp.musicplayerapp.R
 
-
+//clase que muestra las canciones de la Media en el App
 class SongAdapter(var c: Context, var songsList: ArrayList<Song>) : BaseAdapter() {
     private var songsInflater =LayoutInflater.from(c)
 
@@ -23,7 +23,7 @@ class SongAdapter(var c: Context, var songsList: ArrayList<Song>) : BaseAdapter(
         songLay.tag = position
         return songLay
     }
-
+// no se usan estos metodos
     override fun getItem(position: Int): Any {
         return 0
     }
